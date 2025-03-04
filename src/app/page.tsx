@@ -1,101 +1,167 @@
-import Image from "next/image";
+"use client"
+
+import { useState } from "react"
+import Image from "next/image"
+import ProgramModal from "@/components/program-modal"
+import { programs, type Program } from "@/lib/program-data"
+import { ThemeToggle } from "@/components/theme-toggle"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [isOpenProgramModal, setIsOpenProgramModal] = useState(false)
+  const [selectedProgram, setSelectedProgram] = useState<Program | null>(null)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const timeSlots = [
+    "8:00 - 10:00",
+    "10:00 - 13:00",
+    "13:00 - 15:00",
+    "15:00 - 17:00",
+    "17:00 - 19:00",
+    "19:00 - 21:00",
+    "21:00 - 23:00",
+    "23:00 - 01:00",
+  ]
+
+  const timeSlotsWeekend = [
+    "20:00 - 22:00",
+    "22:00 - 00:00",
+  ]
+
+  const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+
+  const handleOpenProgram = (program: Program) => {
+    setSelectedProgram(program)
+    setIsOpenProgramModal(true)
+  }
+
+  const handleCloseProgram = () => {
+    setIsOpenProgramModal(false)
+  }
+
+  const getProgram = (day: string, timeSlot: string) => {
+    return programs.find((program) => program.day === day && program.timeSlot === timeSlot)
+  }
+
+  const isSpecialProgram = (program?: Program) => {
+    return program?.isSpecial || false
+  }
+
+  return (
+    <main className="min-h-screen  p-4 md:p-8 transition-colors">
+      <header className="mb-12 text-center relative">
+        <div className="absolute right-0 top-0">
+          <ThemeToggle />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+        <h1 className="text-4xl md:text-5xl font-bold uppercase">Programación VORTERIX 2025</h1>
+      </header>
+
+      <div className="rounded-xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+        <Table className="w-full min-w-[800px]">
+          <TableHeader>
+            <TableRow className="">
+              <TableHead className="font-semibold ">Horario</TableHead>
+              {days.map((day) => (
+                <TableHead key={day} className="font-semibold">
+                  {day}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {timeSlots.map((timeSlot) => (
+              <TableRow key={timeSlot} >
+                <TableCell className="border border-gray-200 dark:border-gray-800 p-3 font-medium text-gray-700 dark:text-gray-200">{timeSlot}</TableCell>
+                {days.map((day) => {
+                  const program = getProgram(day, timeSlot)
+                  const isSpecial = isSpecialProgram(program)
+
+                  return (
+                    <TableCell
+                      key={`${day}-${timeSlot}`}
+                      className={`border border-gray-200 dark:border-gray-800 p-0 text-center transition-all ${program ? "cursor-pointer hover:bg-[#a5d900]/20" : ""
+                        } ${isSpecial ? "bg-[#a5d900]/10 dark:bg-[#a5d900]/20" : ""}`}
+                      onClick={() => program && handleOpenProgram(program)}
+                    >
+                      {program ? (
+                        <div className={`py-3 px-2 h-full flex items-center justify-center ${isSpecial ? "font-semibold" : ""
+                          }`}>
+                          <span >{program.name}</span>
+                          {isSpecial && (
+                            <span className="ml-1 inline-flex items-center justify-center w-4 h-4">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-[#a5d900]">
+                                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
+                              </svg>
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="py-3 px-2 h-full"></div>
+                      )}
+                    </TableCell>
+                  )
+                })}
+              </TableRow>
+            ))}
+
+            {/* Horarios de fin de semana */}
+            <TableRow >
+              <TableCell colSpan={days.length + 1} className="border border-gray-200 dark:border-gray-800 p-3 font-semibold text-gray-700 dark:text-gray-200 text-center">
+                Programación de fin de semana
+              </TableCell>
+            </TableRow>
+            {timeSlotsWeekend.map((timeSlot, index) => (
+              <TableRow key={timeSlot} >
+                <TableCell className="border border-gray-200 dark:border-gray-800 p-3 font-medium text-gray-700 dark:text-gray-200">{timeSlot}</TableCell>
+                {days.map((day) => {
+                  const program = getProgram(day, timeSlot)
+                  const isSpecial = isSpecialProgram(program)
+
+                  return (
+                    <TableCell
+                      key={`${day}-${timeSlot}`}
+                      className={`border border-gray-200 dark:border-gray-800 p-0 text-center transition-all ${program ? "cursor-pointer hover:bg-[#a5d900]/20" : ""
+                        } ${isSpecial ? "bg-[#a5d900]/10 dark:bg-[#a5d900]/20" : ""}`}
+                      onClick={() => program && handleOpenProgram(program)}
+                    >
+                      {program ? (
+                        <div className={`py-3 px-2 h-full flex items-center justify-center ${isSpecial ? "font-semibold" : ""
+                          }`}>
+                          <span className="dark:text-gray-200">{program.name}</span>
+                          {isSpecial && (
+                            <span className="ml-1 inline-flex items-center justify-center w-4 h-4">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-[#a5d900]">
+                                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
+                              </svg>
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="py-3 px-2 h-full"></div>
+                      )}
+                    </TableCell>
+                  )
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {selectedProgram && (
+        <ProgramModal
+          program={selectedProgram}
+          isOpen={isOpenProgramModal}
+          onClose={handleCloseProgram}
+        />
+      )}
+    </main>
+  )
 }
+
