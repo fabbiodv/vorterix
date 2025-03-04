@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import ProgramModal from "@/components/program-modal"
 import { programs, type Program } from "@/lib/program-data"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -116,7 +115,7 @@ export default function Home() {
                 Programación de fin de semana
               </TableCell>
             </TableRow>
-            {timeSlotsWeekend.map((timeSlot, index) => (
+            {timeSlotsWeekend.map((timeSlot) => (
               <TableRow key={timeSlot} >
                 <TableCell className="border border-gray-200 dark:border-gray-800 p-3 font-medium text-gray-700 dark:text-gray-200">{timeSlot}</TableCell>
                 {days.map((day) => {

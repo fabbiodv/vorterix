@@ -1,7 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
-import { Minimize2 } from "lucide-react"
+
 import type { Program } from "@/lib/program-data"
 import {
     Dialog,
